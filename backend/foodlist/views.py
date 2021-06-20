@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import FoodClass, Foods
+from .models import FoodClass, Foods, HistoryMenu
 from django.views.decorators.http import require_http_methods
 
 import json
@@ -15,7 +15,7 @@ def analysis_request_body(request_body):
     request_body_json = json.loads(request_body)
     return request_body_json
 
-
+@require_http_methods(['GET'])
 def get_foot_class(request):
     """
     获取全部菜品分类
@@ -56,3 +56,18 @@ def get_food(request):
         data=foods
     )
     return JsonResponse(data=data)
+
+@require_http_methods(['POST'])
+def get_history_menu(request):
+    """
+    请求历史菜单接口
+    """
+    pass
+
+
+@require_http_methods(['POST'])
+def save_menu(request):
+    """
+    保存菜单接口
+    """
+    pass

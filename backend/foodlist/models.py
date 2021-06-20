@@ -31,3 +31,17 @@ class Foods(models.Model):
         db_table = 'Food'
         verbose_name = '菜品'
         verbose_name_plural = '菜品'
+        
+        
+class HistoryMenu(models.Model):
+    save_date = models.DateField(db_index=True, verbose_name='菜单日期')
+    menu_info = models.JSONField(verbose_name='菜单信息')
+    
+    def __str__(self) -> str:
+        return self.save_date
+    
+    class Meta:
+        ordering = ['-save_date']
+        db_table = 'HistoryMenu'
+        verbose_name = '历史菜单'
+        verbose_name_plural = '历史菜单'

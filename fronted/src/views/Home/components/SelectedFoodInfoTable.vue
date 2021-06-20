@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding: 20px">
     <div class="top-func" v-if="nowSelectedClassLength != 0">
       <el-button type="primary"> 保存菜单 </el-button>
       <el-button type="primary"> 查看历史菜单 </el-button>
@@ -7,10 +7,12 @@
     <div>
       <div v-for="classItem in foodClassList" :key="classItem.id">
         <div class="food-class-name" v-if="classItem.selected">
-          <span class="first-word">{{ classItem.name.slice(0, 1) }}</span>
-          <span>
-            {{ classItem.name.slice(1) }}
-          </span>
+          <div class="food_name_content">
+            <span class="first-word">{{ classItem.name.slice(0, 1) }}</span>
+            <span>
+              {{ classItem.name.slice(1) }}
+            </span>
+          </div>
         </div>
         <div>
           <el-row :gutter="20">
@@ -77,15 +79,26 @@ export default {
 </script>
 <style lang="less" scoped>
 .top-func {
-  float: right;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 10px;
 }
 .food-class-name {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  padding: 20px 0;
+  margin: 15px 0;
   font-size: 1rem;
   font-weight: bold;
-  .first-word {
-    font-size: 3rem;
+  text-align: center;
+  font-size: 1.3rem;
+  .food_name_content {
+    width: 30%;
+    border-radius: 10px;
+    background-color: #c1b79d;
+    .first-word {
+      font-size: 2.5rem;
+    }
   }
 }
 .no-class {

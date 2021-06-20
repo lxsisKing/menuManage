@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card-parent">
     <el-card shadow="always">
       <img
         height="100px"
@@ -18,19 +18,27 @@
 export default {
   name: "FoodCard",
   props: {
-      foodInfo: {
-          type: Object
-      }
-  }
+    foodInfo: {
+      type: Object,
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
-.food-info-display {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  // flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+.card-parent {
+  margin: 5px 0;
+  .food-info-display {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+/deep/.el-card__body {
+  padding: 10px;
 }
 </style>
