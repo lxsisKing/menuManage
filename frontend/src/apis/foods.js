@@ -20,3 +20,14 @@ export const getFoods = (data) => {
         data,
     })
 }
+
+export const saveMenuApi = (data) => {
+    /**
+     * 保存当日菜单
+     */
+    return axios.request({
+        url: 'foodlist/save_menu',
+        method: 'post',
+        data
+    })
+}

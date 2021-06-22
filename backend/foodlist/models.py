@@ -34,11 +34,11 @@ class Foods(models.Model):
         
         
 class HistoryMenu(models.Model):
-    save_date = models.DateField(db_index=True, verbose_name='菜单日期')
+    save_date = models.DateField(db_index=True, verbose_name='菜单日期', unique=True)
     menu_info = models.JSONField(verbose_name='菜单信息')
     
     def __str__(self) -> str:
-        return self.save_date
+        return self.save_date.strftime("%Y-%m-%d")
     
     class Meta:
         ordering = ['-save_date']

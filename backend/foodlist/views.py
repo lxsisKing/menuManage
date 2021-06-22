@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import FoodClass, Foods, HistoryMenu
 from django.views.decorators.http import require_http_methods
+from datetime import datetime
 
 import json
 
@@ -70,4 +71,20 @@ def save_menu(request):
     """
     保存菜单接口
     """
-    pass
+    data = analysis_request_body(request.body)
+    content = json.loads(data['content'])
+    now_date = datetime.now().strftime("%Y-%m-%d")
+    try:
+        today_menu = HistoryMenu.objects.get(save_date=now_date)
+        today_menu.menu_info = content
+        today_menu.save()
+    except Exception as e: 
+        today_menu = HistoryMenu()
+        today_menu.save_date = now_date
+        today_menu.menu_info = content
+        today_menu.save()
+    res = dict(
+        code=200
+    )
+    return JsonResponse(res)
+    

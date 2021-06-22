@@ -1,7 +1,8 @@
 <template>
   <div style="padding: 20px">
     <div class="top-func" v-if="nowSelectedClassLength != 0">
-      <el-button type="primary"> 保存菜单 </el-button>
+      <el-button type="primary" @click="saveMene"> 保存菜单 </el-button>
+      <el-button type="primary"> 导出菜单 </el-button>
       <el-button type="primary"> 查看历史菜单 </el-button>
     </div>
     <div>
@@ -38,6 +39,8 @@
 import foodsInfo from "@/views/Home/mixins/foodsInfo.js";
 // coms
 import FoodCard from "@/views/Home/components/FoodCard.vue";
+// apis
+import {saveMenuApi} from "@/apis/foods.js"
 export default {
   name: "SelectedFoodInfoTable",
   mixins: [foodsInfo],
@@ -74,6 +77,27 @@ export default {
         return foodsInfo;
       };
     },
+  },
+  methods: {
+    saveMene() {
+      /**
+       * 保存当日菜单
+       */
+      let selectedFoodList = JSON.stringify(this.selectedFoodList)
+      let data = {
+        content: selectedFoodList
+      }
+      saveMenuApi(data).then(res => {
+        if(res.data.code == 200) {
+          this.$message({
+            message: '保存成功',
+            center: true,
+            type: 'success',
+            showClose: true
+          })
+        }
+      })
+    }
   },
 };
 </script>
