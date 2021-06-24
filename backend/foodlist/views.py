@@ -6,6 +6,12 @@ from datetime import datetime
 
 import json
 
+
+from .func import func_list
+
+
+
+
 # Create your views here.
 
 
@@ -87,4 +93,24 @@ def save_menu(request):
         code=200
     )
     return JsonResponse(res)
+
+@require_http_methods(['POST'])
+def export_menu(request):
+    """
+    导出菜单
+    """
+    data = analysis_request_body(request.body)
+    selected_date = data['date']
+    menu = HistoryMenu.objects.filter(save_date=selected_date).values()[0]
+    menu_info = menu['menu_info']
+    menu_dict = dict()
+    for one in menu_info:
+        class_id = one['classId']
+        class_name = FoodClass.objects.get(id=class_id).food_class_name
+        this_class = menu_dict.setdefault(class_name, [])
+        this_class.append("{}({}元)".format(one['name'], one['price']))
+    func_list.export_excel_file(menu_dict)
+    return JsonResponse(dict(
+        code=200
+    ))
     
