@@ -34,4 +34,7 @@ body {
   width: 100%;
 }
 
+.el-message.message-class {
+  min-width: 180px;
+}
 </style>

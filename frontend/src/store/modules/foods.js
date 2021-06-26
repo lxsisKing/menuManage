@@ -1,6 +1,8 @@
 import {
-    getFoodClass
+    getFoodClass,
+    getHistoryMenuApi
 } from "@/apis/foods.js"
+import moment from 'moment'
 const state = {
     foodClassList: [],
     selectedFoodList: [],
@@ -61,6 +63,22 @@ const mutations = {
         }
         state.selectedFoodList = [...selectedFoodList]
 
+    },
+    saveHistoryMenuInfo(state, data) {
+        /**
+         * 存储菜单的菜品信息
+         */
+        state.selectedFoodList = [...data]
+    },
+    setDefaultClassInfo(state) {
+        /**
+         * 重置菜品分类信息
+         */
+        for(let x of state.foodClassList) {
+            if(x.selected) {
+                x.selected = false
+            }
+        }
     }
 }
 const getters = {
@@ -68,7 +86,8 @@ const getters = {
 }
 const actions = {
     async foodClassAction({
-        commit
+        commit,
+        state
     }) {
         /**
          * 请求获取菜品信息
@@ -76,6 +95,26 @@ const actions = {
         const res = await getFoodClass()
         if (res.data.code == 200) {
             commit("saveFoodClass", res.data.data)
+            let data = {
+                date: moment().format('YYYY-MM-DD'),
+              }
+  
+              getHistoryMenuApi(data).then(res => {
+                if(res.data.code == 200) {
+                  let selected_food = res.data.data
+                  let selected_class = selected_food.map(x => {
+                    return x.classId
+                  })
+                  let foodClassList = [...state.foodClassList]
+                  for(let x of foodClassList) {
+                    if(!x.selected && selected_class.indexOf(x.id) != -1) {
+                      x.selected = true
+                    }
+                  }
+                  commit("saveFoodClass", foodClassList)
+                  commit("saveHistoryMenuInfo", res.data.data)
+                }
+              })
         }
     }
 }

@@ -69,7 +69,23 @@ def get_history_menu(request):
     """
     请求历史菜单接口
     """
-    pass
+    data = analysis_request_body(request.body)
+    selected_date = data['date']
+    # menu = HistoryMenu.objects.filter(save_date=selected_date).values()[0]
+    try:
+        menu = HistoryMenu.objects.get(save_date=selected_date)
+        menu_info = menu.menu_info
+        res = dict(
+            code=200,
+            data=menu_info
+        )
+        return JsonResponse(res)
+    except Exception as e:
+        res = dict(
+            code=404,
+            message="未查找到{}数据".format(selected_date)
+        )
+        return JsonResponse(res)
 
 
 @require_http_methods(['POST'])
@@ -78,15 +94,15 @@ def save_menu(request):
     保存菜单接口
     """
     data = analysis_request_body(request.body)
-    selecte_date = data['date']
+    selected_date = data['date']
     content = json.loads(data['content'])
     try:
-        today_menu = HistoryMenu.objects.get(save_date=selecte_date)
+        today_menu = HistoryMenu.objects.get(save_date=selected_date)
         today_menu.menu_info = content
         today_menu.save()
     except Exception as e: 
         today_menu = HistoryMenu()
-        today_menu.save_date = selecte_date
+        today_menu.save_date = selected_date
         today_menu.menu_info = content
         today_menu.save()
     res = dict(

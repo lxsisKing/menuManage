@@ -1,10 +1,12 @@
 <template>
   <div style="padding: 20px">
-    <div class="top-func" v-if="nowSelectedClassLength != 0">
+    <div class="top-func">
       <el-date-picker
         v-model="selected_date"
         type="date"
         class="date-picker"
+        @change="changeDate"
+        :picker-options='pickerOptions'
       ></el-date-picker>
       <el-button type="primary" @click="saveMene"> 保存菜单 </el-button>
       <el-button type="primary" @click="exportMenuFileApi">
@@ -44,7 +46,7 @@
 <script>
 // mixins
 import foodsInfo from "@/views/Home/mixins/foodsInfo.js";
-import executeApi from "@/views/Home/components/SelectedFoodInfoTable/mixins/executeApi.js"
+import executeApi from "@/views/Home/components/SelectedFoodInfoTable/mixins/executeApi.js";
 // coms
 import FoodCard from "@/views/Home/components/FoodCard.vue";
 
@@ -56,7 +58,13 @@ export default {
   },
   data() {
     return {
-      selected_date: null
+      selected_date: null,
+      old_selected_date: null,
+      pickerOptions: {
+        disabledDate: (time) => {
+          return time.getTime() > this.$moment()
+        }
+      }
     };
   },
   computed: {
@@ -88,10 +96,14 @@ export default {
     },
   },
   methods: {
+    changeDate(value) {
+      let picked_date= this.$moment(value).format('YYYY-MM-DD')
+      this.getHistoryMenuInfo(picked_date)
+    },
 
   },
   mounted() {
-    this.selected_date = this.$moment()
+    this.selected_date = this.$moment();
   },
 };
 </script>
@@ -124,7 +136,7 @@ export default {
 }
 .no-class {
   width: 100%;
-  height: 100%;
+  min-height: 500px;
   display: flex;
   font-size: 2rem;
   font-weight: bold;

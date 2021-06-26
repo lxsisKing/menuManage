@@ -43,3 +43,14 @@ export const exportMenuFileApi = (data) => {
         responseType: 'blob'
     })
 }
+
+export const getHistoryMenuApi = (data) => {
+    /**
+     * 获取历史菜单数据
+     */
+    return axios.request({
+        url: 'foodlist/get_history_menu',
+        method: 'post',
+        data,
+    })
+}
