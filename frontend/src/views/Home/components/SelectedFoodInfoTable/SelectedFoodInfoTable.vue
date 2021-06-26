@@ -1,9 +1,16 @@
 <template>
   <div style="padding: 20px">
     <div class="top-func" v-if="nowSelectedClassLength != 0">
+      <el-date-picker
+        v-model="selected_date"
+        type="date"
+        class="date-picker"
+      ></el-date-picker>
       <el-button type="primary" @click="saveMene"> 保存菜单 </el-button>
-      <el-button type="primary"> 导出菜单 </el-button>
-      <el-button type="primary"> 查看历史菜单 </el-button>
+      <el-button type="primary" @click="exportMenuFileApi">
+        导出菜单
+      </el-button>
+      <!-- <el-button type="primary"> 查看历史菜单 </el-button> -->
     </div>
     <div>
       <div v-for="classItem in foodClassList" :key="classItem.id">
@@ -37,18 +44,20 @@
 <script>
 // mixins
 import foodsInfo from "@/views/Home/mixins/foodsInfo.js";
+import executeApi from "@/views/Home/components/SelectedFoodInfoTable/mixins/executeApi.js"
 // coms
 import FoodCard from "@/views/Home/components/FoodCard.vue";
-// apis
-import {saveMenuApi} from "@/apis/foods.js"
+
 export default {
   name: "SelectedFoodInfoTable",
-  mixins: [foodsInfo],
+  mixins: [foodsInfo, executeApi],
   components: {
     FoodCard,
   },
   data() {
-    return {};
+    return {
+      selected_date: null
+    };
   },
   computed: {
     foodClassList() {
@@ -79,25 +88,10 @@ export default {
     },
   },
   methods: {
-    saveMene() {
-      /**
-       * 保存当日菜单
-       */
-      let selectedFoodList = JSON.stringify(this.selectedFoodList)
-      let data = {
-        content: selectedFoodList
-      }
-      saveMenuApi(data).then(res => {
-        if(res.data.code == 200) {
-          this.$message({
-            message: '保存成功',
-            center: true,
-            type: 'success',
-            showClose: true
-          })
-        }
-      })
-    }
+
+  },
+  mounted() {
+    this.selected_date = this.$moment()
   },
 };
 </script>
@@ -106,6 +100,9 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-right: 10px;
+  .date-picker {
+    margin-right: 10px;
+  }
 }
 .food-class-name {
   display: flex;

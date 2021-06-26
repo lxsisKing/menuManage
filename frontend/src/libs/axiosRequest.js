@@ -36,7 +36,8 @@ class HttpRequest {
                 // 以获取response
                 const {
                     data,
-                    status
+                    status,
+                    headers
                 } = res;
                 if (status !== 200) {
                     Message({
@@ -45,7 +46,7 @@ class HttpRequest {
                         duration: 5 * 1000
                     })
                 }
-                return {data, status}
+                return {data, status, headers}
             },
             error => {
                 if (axios.isCancel(error)) {

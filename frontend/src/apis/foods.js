@@ -31,3 +31,15 @@ export const saveMenuApi = (data) => {
         data
     })
 }
+
+export const exportMenuFileApi = (data) => {
+    /**
+     * 导出菜单文件
+     */
+    return axios.request({
+        url: 'foodlist/export_menu',
+        method: 'post',
+        data,
+        responseType: 'blob'
+    })
+}

@@ -6,6 +6,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import animated from 'animate.css'
 import vuescroll from 'vuescroll';
+import "./dependences/moment.js"
 
 Vue.use(vuescroll, {
   ops: {

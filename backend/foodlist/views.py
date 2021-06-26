@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from .models import FoodClass, Foods, HistoryMenu
 from django.views.decorators.http import require_http_methods
 from datetime import datetime
@@ -78,15 +78,15 @@ def save_menu(request):
     保存菜单接口
     """
     data = analysis_request_body(request.body)
+    selecte_date = data['date']
     content = json.loads(data['content'])
-    now_date = datetime.now().strftime("%Y-%m-%d")
     try:
-        today_menu = HistoryMenu.objects.get(save_date=now_date)
+        today_menu = HistoryMenu.objects.get(save_date=selecte_date)
         today_menu.menu_info = content
         today_menu.save()
     except Exception as e: 
         today_menu = HistoryMenu()
-        today_menu.save_date = now_date
+        today_menu.save_date = selecte_date
         today_menu.menu_info = content
         today_menu.save()
     res = dict(
@@ -109,8 +109,9 @@ def export_menu(request):
         class_name = FoodClass.objects.get(id=class_id).food_class_name
         this_class = menu_dict.setdefault(class_name, [])
         this_class.append("{}({}元)".format(one['name'], one['price']))
-    func_list.export_excel_file(menu_dict)
-    return JsonResponse(dict(
-        code=200
-    ))
-    
+    file_info = func_list.export_excel_file(selected_date, menu_dict)
+    file_data = file_info['data']
+    filename = file_info['filename']
+    response = FileResponse(file_data, as_attachment=True, filename=filename)
+    response['Access-Control-Expose-Headers'] = 'Content-Disposition'
+    return response

@@ -42,7 +42,7 @@
 // com
 import FoodClass from "./components/FoodClass.vue";
 import FoodMenu from "./components/FoodMenu.vue";
-import SelectedFoodInfoTable from "./components/SelectedFoodInfoTable.vue";
+import SelectedFoodInfoTable from "./components/SelectedFoodInfoTable/SelectedFoodInfoTable.vue";
 export default {
   name: "Home",
   components: {
