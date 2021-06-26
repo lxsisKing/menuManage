@@ -1,6 +1,11 @@
 import xlsxwriter
 from datetime import datetime
 from pathlib import Path
+from Crypto.Cipher import AES
+from django.conf import settings
+from binascii import a2b_hex, b2a_hex
+import base64
+
 
 def export_excel_file(date_info, data):
     """
@@ -24,3 +29,22 @@ def export_excel_file(date_info, data):
         data=f,
         filename=filename
     )
+    
+def decrypt(value):
+    """
+    解密数据
+    """
+    key = settings.AES_KEY.encode('utf-8')
+    iv = settings.AES_IV.encode('utf-8')
+    mode = AES.MODE_CBC
+    cryptor = AES.new(key, mode, iv)
+    value_b64 = base64.b64decode(value)
+    plain_text = cryptor.decrypt(value_b64)
+    
+    plain_text = bytes.decode(plain_text)
+    return plain_text
+    
+    
+    
+    
+    

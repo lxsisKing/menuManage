@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse, FileResponse
 from .models import FoodClass, Foods, HistoryMenu
 from django.views.decorators.http import require_http_methods
-from datetime import datetime
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 
 import json
 
@@ -15,12 +16,37 @@ from .func import func_list
 # Create your views here.
 
 
+
+
+
 def analysis_request_body(request_body):
     """
     将POST请求数据转换为字典
     """
     request_body_json = json.loads(request_body)
     return request_body_json
+
+
+@require_http_methods(['POST'])
+def ver(request):
+    data = analysis_request_body(request.body)
+    username = func_list.decrypt(data['username'])
+    password = func_list.decrypt(data['password'])
+    user = authenticate(username=username, password=password)
+    if user is not None and user.is_active:
+        login(request, user)
+        data = dict(
+            code=200,
+            message="登录成功",
+        )
+        return JsonResponse(data)
+    else:
+        data = dict(
+            code=403,
+            message="账号或密码错误"
+        )
+        return JsonResponse(data)
+    
 
 @require_http_methods(['GET'])
 def get_foot_class(request):
