@@ -41,8 +41,13 @@ const executeApi = {
         date: this.$moment(this.selected_date).format('YYYY-MM-DD'),
       }
       exportMenuFileApi(data).then(res => {
-        let filename = res.headers['content-disposition'].split(';')[1].split('=')[1].split("\"")[1]
-        this.uploadFile(res.data, filename)
+        if (res.data.code) {
+          return
+        } else {
+          let filename = res.headers['content-disposition'].split(';')[1].split('=')[1].split("\"")[1]
+          this.uploadFile(res.data, filename)
+        }
+
       })
     },
     uploadFile(blob, filename) {
@@ -67,7 +72,14 @@ const executeApi = {
       }
 
       getHistoryMenuApi(data).then(res => {
-        if (res.data.code == 200) {
+        if (res.data.code != 401) {
+          if (res.data.code == 404) {
+            let messageProperty = {
+              ...config.messageProperty
+            }
+            messageProperty.message = res.data.message
+            this.$message.warning(messageProperty)
+          }
           let selected_food = res.data.data
           let selected_class = selected_food.map(x => {
             return x.classId
@@ -82,15 +94,9 @@ const executeApi = {
           }
           this.old_selected_date = this.selected_date
           this.$store.commit("saveFoodClass", foodClassList)
-          this.$store.commit("saveHistoryMenuInfo", res.data.data)
-        } else if (res.data.code == 404) {
-          let messageProperty = {
-            ...config.messageProperty
-          }
-          messageProperty.message = res.data.message
-          this.$message.error(messageProperty)
-          this.selected_date = this.old_selected_date
+          this.$store.commit("saveHistoryMenuInfo", selected_food)
         }
+
       })
     }
   },

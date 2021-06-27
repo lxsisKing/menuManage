@@ -4,11 +4,17 @@ from .models import FoodClass, Foods, HistoryMenu
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.conf import settings
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+import functools
 
 import json
 
 
 from .func import func_list
+
+
+serializer = Serializer(settings.SECRET_KEY, expires_in=10)
 
 
 
@@ -17,6 +23,21 @@ from .func import func_list
 
 
 
+def authorization(func):
+    @functools.wraps(func)
+    def warpper(request, *args, **kwargs):
+        try:
+            token = request.headers['Authorization']
+            serializer.loads(token)
+            return func(request, *args, *kwargs)
+        except:
+            data = dict(
+                code=401,
+                message="未登录"
+            )
+            return JsonResponse(data)
+    return warpper
+        
 
 
 def analysis_request_body(request_body):
@@ -29,15 +50,20 @@ def analysis_request_body(request_body):
 
 @require_http_methods(['POST'])
 def ver(request):
+    """
+    登录接口
+    """
     data = analysis_request_body(request.body)
     username = func_list.decrypt(data['username'])
     password = func_list.decrypt(data['password'])
     user = authenticate(username=username, password=password)
     if user is not None and user.is_active:
         login(request, user)
+        token = serializer.dumps(username).decode()
         data = dict(
             code=200,
             message="登录成功",
+            token=token
         )
         return JsonResponse(data)
     else:
@@ -49,6 +75,7 @@ def ver(request):
     
 
 @require_http_methods(['GET'])
+@authorization
 def get_foot_class(request):
     """
     获取全部菜品分类
@@ -68,7 +95,9 @@ def get_foot_class(request):
     )
     return JsonResponse(data=data)
 
+
 @require_http_methods(['POST'])
+@authorization
 def get_food(request):
     """
     单类菜品数据请求接口
@@ -90,7 +119,9 @@ def get_food(request):
     )
     return JsonResponse(data=data)
 
+
 @require_http_methods(['POST'])
+@authorization
 def get_history_menu(request):
     """
     请求历史菜单接口
@@ -109,12 +140,14 @@ def get_history_menu(request):
     except Exception as e:
         res = dict(
             code=404,
-            message="未查找到{}数据".format(selected_date)
+            data=[],
+            message="{}没有菜单数据".format(selected_date)
         )
         return JsonResponse(res)
 
 
 @require_http_methods(['POST'])
+@authorization
 def save_menu(request):
     """
     保存菜单接口
@@ -137,6 +170,7 @@ def save_menu(request):
     return JsonResponse(res)
 
 @require_http_methods(['POST'])
+@authorization
 def export_menu(request):
     """
     导出菜单

@@ -72,6 +72,7 @@ export default {
           loginApi(data).then((res) => {
             messageProperty.message = res.data.message;
             if (res.data.code == 200) {
+              this.$store.commit("setToken", res.data.token)
               this.$message.success(messageProperty);
               this.$router.push({ name: "Home" });
             } else {

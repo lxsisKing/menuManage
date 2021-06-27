@@ -2,6 +2,8 @@ import axios from 'axios'
 import {
     Message
 } from 'element-ui'
+import store from '@/store'
+import router from '@/router'
 
 axios.defaults.withCredentials = true; //配置为true
 
@@ -15,7 +17,7 @@ class HttpRequest {
         const config = {
             baseURL: this.baseURL,
             headers: {
-
+                "Authorization": store.state.authorization.token
             },
             timeout: 10000
         };
@@ -45,6 +47,10 @@ class HttpRequest {
                         type: 'error',
                         duration: 5 * 1000
                     })
+                }
+                if(data.code == 401) {
+                    store.commit("setToken", null)
+                    router.push({ name: "Login" })
                 }
                 return {data, status, headers}
             },

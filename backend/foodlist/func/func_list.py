@@ -3,7 +3,6 @@ from datetime import datetime
 from pathlib import Path
 from Crypto.Cipher import AES
 from django.conf import settings
-from binascii import a2b_hex, b2a_hex
 import base64
 
 
@@ -42,6 +41,8 @@ def decrypt(value):
     plain_text = cryptor.decrypt(value_b64)
     
     plain_text = bytes.decode(plain_text)
+    r_str = plain_text[-1]
+    plain_text = plain_text.rstrip(r_str)
     return plain_text
     
     

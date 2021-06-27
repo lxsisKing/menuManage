@@ -59,7 +59,6 @@ export default {
   data() {
     return {
       selected_date: null,
-      old_selected_date: null,
       pickerOptions: {
         disabledDate: (time) => {
           return time.getTime() > this.$moment()
