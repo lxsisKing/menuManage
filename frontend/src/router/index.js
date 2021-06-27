@@ -6,16 +6,23 @@ import store from '@/store'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta:{
+      title: '天辉餐厅菜单管理系统'
+    }
+    
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
+    meta: {
+      title: '登录'
+    }
+    
   }
 ]
 
@@ -25,16 +32,23 @@ const router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
   let token = store.state.authorization.token
-  if(to.path === '/login') {
-    if(token === null) {
+  if (to.path === '/login') {
+    if (token === null) {
       next()
     } else {
-      next({name: 'Home'})
+      next({
+        name: 'Home'
+      })
     }
-  }else {
-    if(token === null) {
-      next({name: 'Login'})
+  } else {
+    if (token === null) {
+      next({
+        name: 'Login'
+      })
     } else {
       next()
     }

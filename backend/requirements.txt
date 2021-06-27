@@ -1,0 +1,9 @@
+asgiref @ file:///tmp/build/80754af9/asgiref_1617740417847/work
+certifi==2021.5.30
+Django @ file:///home/conda/feedstock_root/build_artifacts/django_1622633222759/work
+django-cors-headers==3.7.0
+itsdangerous==2.0.1
+pycrypto==2.6.1
+pytz @ file:///tmp/build/80754af9/pytz_1612215392582/work
+sqlparse @ file:///tmp/build/80754af9/sqlparse_1602184451250/work
+XlsxWriter==1.4.3

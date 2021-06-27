@@ -14,7 +14,7 @@ import json
 from .func import func_list
 
 
-serializer = Serializer(settings.SECRET_KEY, expires_in=10)
+serializer = Serializer(settings.SECRET_KEY, expires_in=7200)
 
 
 
